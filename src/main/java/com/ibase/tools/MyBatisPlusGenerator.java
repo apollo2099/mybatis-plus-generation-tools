@@ -13,6 +13,7 @@ import com.baomidou.mybatisplus.generator.config.InjectionConfig;
 import com.baomidou.mybatisplus.generator.config.OutputFile;
 import com.baomidou.mybatisplus.generator.config.querys.MySqlQuery;
 import com.ibase.tools.config.TimerVelocityTemplateEngine;
+import netscape.javascript.JSObject;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
@@ -40,7 +41,7 @@ public class MyBatisPlusGenerator {
         // 模板配置
         autoGenerator.template(initTemplateConfig());
         // 自定义配置
-        autoGenerator.injection(initInjectionConfig(projectPath));
+        autoGenerator.injection(initInjectionConfig(projectPath,moduleName));
         // 策略配置
         autoGenerator.strategy(initStrategyConfig(tableNames));
         // 使用Freemarker引擎模板，默认的是Velocity引擎模板
@@ -137,9 +138,10 @@ public class MyBatisPlusGenerator {
     /**
      * 初始化自定义配置
      */
-    private static InjectionConfig initInjectionConfig(String projectPath) {
+    private static InjectionConfig initInjectionConfig(String projectPath, String moduleName) {
         /**自定义生成模板参数**/
         Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("moduleName",moduleName);
         /** 自定义 生成类**/
         Map<String, String> customFileMap = new HashMap();
         //TODO 修改修改模版变量数据
@@ -152,6 +154,9 @@ public class MyBatisPlusGenerator {
                         System.out.println(key + " : " + value);
                     });
                     System.out.println("tableInfo: " + tableInfo.getEntityName() + " objectMap: " + objectMap.size());
+                    String subEntityName = MyBatisPlusGenerator.toLowerCaseFirstOne(tableInfo.getEntityName());
+                    //TODO 模版文件未拿到
+                    paramMap.put("subEntityName",subEntityName);
                 })
                 .customMap(paramMap)
                 .customFile(customFileMap)
@@ -226,5 +231,18 @@ public class MyBatisPlusGenerator {
         return builder.build();
     }
 
+
+    /**
+     * 首字母转为小写
+     * @param s
+     * @return
+     */
+    public static String toLowerCaseFirstOne(String s){
+        if(Character.isLowerCase(s.charAt(0))) {
+            return s;
+        }else {
+            return (new StringBuilder()).append(Character.toLowerCase(s.charAt(0))).append(s.substring(1)).toString();
+        }
+    }
 }
 

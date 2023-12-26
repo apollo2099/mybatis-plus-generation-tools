@@ -1,44 +1,54 @@
 import request from '@/utils/request'
 
-// 查询${functionName}列表
-export function list${BusinessName}(query) {
+// 查询$!{table.comment}列表
+export function list${entity}(query) {
   return request({
-    url: '/${moduleName}/${businessName}/list',
+    url: '/${moduleName}/${entity}/list',
     method: 'get',
     params: query
   })
 }
 
-// 查询${functionName}详细
-export function get${BusinessName}(${pkColumn.javaField}) {
-  return request({
-    url: '/${moduleName}/${businessName}/' + ${pkColumn.javaField},
-    method: 'get'
-  })
-}
+#foreach($field in ${table.fields})
+  #if(${field.keyFlag})
+  // 查询$!{table.comment}详细
+  export function get${entity}(${field.name}) {
+    return request({
+      url: '/${moduleName}/${entity}/' + ${field.name},
+      method: 'get'
+    })
+  }
+  #end
+#end
 
-// 新增${functionName}
-export function add${BusinessName}(data) {
+
+// 新增$!{table.comment}
+export function add${entity}(data) {
   return request({
-    url: '/${moduleName}/${businessName}',
+    url: '/${moduleName}/${entity}',
     method: 'post',
     data: data
   })
 }
 
-// 修改${functionName}
-export function update${BusinessName}(data) {
+// 修改$!{table.comment}
+export function update${entity}(data) {
   return request({
-    url: '/${moduleName}/${businessName}',
+    url: '/${moduleName}/${subEntityName}',
     method: 'put',
     data: data
   })
 }
 
-// 删除${functionName}
-export function del${BusinessName}(${pkColumn.javaField}) {
+#foreach($field in ${table.fields})
+#if(${field.keyFlag})
+
+// 删除$!{table.comment}
+export function del${entity}(${field.name}) {
   return request({
-    url: '/${moduleName}/${businessName}/' + ${pkColumn.javaField},
+    url: '/${moduleName}/${subEntityName}/' + ${field.name},
     method: 'delete'
   })
 }
+#end
+#end
