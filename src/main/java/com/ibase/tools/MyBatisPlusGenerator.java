@@ -13,7 +13,6 @@ import com.baomidou.mybatisplus.generator.config.InjectionConfig;
 import com.baomidou.mybatisplus.generator.config.OutputFile;
 import com.baomidou.mybatisplus.generator.config.querys.MySqlQuery;
 import com.ibase.tools.config.TimerVelocityTemplateEngine;
-import netscape.javascript.JSObject;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
@@ -22,6 +21,9 @@ import java.util.Scanner;
 import java.util.function.Consumer;
 
 /**
+ *
+ * https://www.qb5200.com/article/488017.html
+ *
  * MyBatisPlus代码生成器
  * 3.5.1
  */
@@ -30,7 +32,7 @@ public class MyBatisPlusGenerator {
     public static void main(String[] args) {
         // 获取当前目录路径
         String projectPath = System.getProperty("user.dir");
-        String moduleName = "cart";//scanner("模块名");
+        String moduleName = "goods";//scanner("模块名");
         String[] tableNames = {};//scanner("表名，多个英文逗号分割").split(",");
         // 代码生成器: 数据源配置
         AutoGenerator autoGenerator = new AutoGenerator(initDataSourceConfig());
@@ -109,10 +111,10 @@ public class MyBatisPlusGenerator {
                 .Builder()
                 .parent(props.getStr("package.base"))  // 父包名
                 .moduleName(moduleName)      //父包模块名
-                .entity("model")             //实体类 Entity 包名,默认值：entity
+                .entity("entity")             //实体类 Entity 包名,默认值：entity
                 .service("service")          //Service 包名,默认值：entity
                 .serviceImpl("service.impl") //实现类 Service Impl 包名	默认值：service.impl
-                .mapper("mapper")            //Mapper 包名	默认值：mapper
+                .mapper("dao")            //Mapper 包名	默认值：mapper
                 .xml("mapper.xml")           //Mapper XML 包名	默认值：mapper.xml
                 .controller("controller")    //Controller 包名	默认值：controller
                 .other("other")              //自定义文件包名	可使用"other"，生产一个other文件目录
@@ -127,6 +129,7 @@ public class MyBatisPlusGenerator {
     private static TemplateConfig initTemplateConfig() {
         return new TemplateConfig.Builder()
                 .entity("/templates/java/entity.java.vm")
+                .entityKt("/templates/java/entityEvent.java.vm")
                 .service("/templates/java/service.java.vm")
                 .serviceImpl("/templates/java/serviceImpl.java.vm")
                 .mapper("/templates/java/mapper.java.vm")
@@ -142,11 +145,13 @@ public class MyBatisPlusGenerator {
         /**自定义生成模板参数**/
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("moduleName",moduleName);
+        paramMap.put("subEntityName","");
         /** 自定义 生成类**/
         Map<String, String> customFileMap = new HashMap();
         //TODO 修改修改模版变量数据
         customFileMap.put("/api/%sApi.js", "templates/js/api.js.vm");
-        customFileMap.put("/%s/index.vue", "templates/vue/index.vue.vm");
+//        customFileMap.put("/%s/index.vue", "templates/vue/index.vue.vm");
+        customFileMap.put("/dto/%sEvent.java", "templates/java/entityEvent.java.vm");
         // 自定义配置
         return new InjectionConfig.Builder()
                 .beforeOutputFile((tableInfo, objectMap) -> {
@@ -186,8 +191,10 @@ public class MyBatisPlusGenerator {
                 //.idType(IdType.ASSIGN_ID) //全局主键类型
                 .disableSerialVersionUID() // 禁用生成 serialVersionUID,默认值：true
                 //.enableColumnConstant()//开启生成字段常量,默认值：false
-                .enableChainModel()//开启链式模型,默认值：false
-                .enableLombok()//开启 lombok 模型,默认值：false
+                //开启链式模型,默认值：false
+                .enableChainModel()
+                //开启 lombok 模型,默认值：false
+                .enableLombok()
                 .enableRemoveIsPrefix()//开启 Boolean 类型字段移除 is 前缀,默认值：false
                 .enableTableFieldAnnotation()//开启生成实体时生成字段注解,默认值：false
                 //.enableActiveRecord()//开启 ActiveRecord 模型,默认值：false
@@ -219,6 +226,7 @@ public class MyBatisPlusGenerator {
                 //.convertXmlFileName()
                 .formatMapperFileName("%sMapper")//格式化 mapper 文件名称
                 .formatXmlFileName("%sMapper");//格式化 xml 实现类文件名称
+
 
         //当表名中带*号时可以启用通配符模式
         if (tableNames.length == 1 && tableNames[0].contains("*")) {
