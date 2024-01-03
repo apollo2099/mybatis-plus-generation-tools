@@ -32,7 +32,7 @@ public class MyBatisPlusGenerator {
     public static void main(String[] args) {
         // 获取当前目录路径
         String projectPath = System.getProperty("user.dir");
-        String moduleName = "goods";//scanner("模块名");
+        String moduleName = "user";//scanner("模块名");
         String[] tableNames = {};//scanner("表名，多个英文逗号分割").split(",");
         // 代码生成器: 数据源配置
         AutoGenerator autoGenerator = new AutoGenerator(initDataSourceConfig());
